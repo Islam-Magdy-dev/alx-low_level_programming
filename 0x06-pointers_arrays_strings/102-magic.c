@@ -1,11 +1,4 @@
 #include <stdio.h>
-/*
-* main - Entry point for the program
-*
-* Description: This function prints the value of a[2]
-*
-* Return: Always 0 (Success)
-*/
 int main(void)
 {
 int n;
