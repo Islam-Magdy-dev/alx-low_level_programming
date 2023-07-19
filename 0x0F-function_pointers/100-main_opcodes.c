@@ -1,24 +1,17 @@
-#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 /**
- * main - Entry point
+ * main - prints its own opcodes
+ * @argc: number of arguments
+ * @argv: array of arguments
  *
- * Description: A program that prints the opcodes
- *              of its own main function.
- *              Usage: ./main number_of_bytes
- *
- * @argc: argument counter
- * @argv: argument vector
- *
- * Return: Always Successful
-*/
-
+ * Return: Always 0 (Success)
+ */
 int main(int argc, char *argv[])
 {
-	int index, nbytes;
-	char *ptr = (char *) main;
+	int bytes, i;
+	char *arr;
 
 	if (argc != 2)
 	{
@@ -26,19 +19,25 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 
-	nbytes = atoi(argv[1]);
-	if (nbytes < 0)
+	bytes = atoi(argv[1]);
+
+	if (bytes < 0)
 	{
 		printf("Error\n");
 		exit(2);
 	}
 
-	for (index = 0; index < nbytes; index++)
+	arr = (char *)main;
+
+	for (i = 0; i < bytes; i++)
 	{
-		printf("%02x", ptr[index] & 0xFF);
-		if (index != nbytes - 1)
-			printf(" ");
+		if (i == bytes - 1)
+		{
+			printf("%02hhx\n", arr[i]);
+			break;
+		}
+		printf("%02hhx ", arr[i]);
 	}
-	printf("\n");
 	return (0);
 }
+
