@@ -95,7 +95,7 @@ void print_data(unsigned char *e_ident)
 {
 	printf("  Data:                              ");
 
-	switch (e_ident[EI_DATA])
+	switch (e_ident[EI_DATA])  // Corrected from EI_CLASS to EI_DATA
 	{
 		case ELFDATANONE:
 			printf("none\n");
@@ -107,9 +107,10 @@ void print_data(unsigned char *e_ident)
 			printf("2's complement, big endian\n");
 			break;
 		default:
-			printf("<unknown: %x>\n", e_ident[EI_CLASS]);
+			printf("<unknown: %x>\n", e_ident[EI_DATA]); // Corrected from EI_CLASS to EI_DATA
 	}
 }
+
 
 /**
  * print_version - Prints the version of an ELF header.
