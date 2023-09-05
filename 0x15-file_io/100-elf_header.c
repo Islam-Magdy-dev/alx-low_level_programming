@@ -18,61 +18,6 @@ void print_type(unsigned int e_type, unsigned char *e_ident);
 void print_entry(unsigned long int e_entry, unsigned char *e_ident);
 void close_elf(int elf);
 
-int main(int argc, char *argv[])
-{
-    if (argc != 2)
-    {
-        fprintf(stderr, "Usage: %s <ELF file>\n", argv[0]);
-        return 1;
-    }
-
-    Elf64_Ehdr *header = malloc(sizeof(Elf64_Ehdr));
-    if (header == NULL)
-    {
-        perror("Error allocating memory");
-        return 1;
-    }
-
-    int fd = open(argv[1], O_RDONLY);
-    if (fd == -1)
-    {
-        perror("Error opening file");
-        return 1;
-    }
-
-    ssize_t bytes_read = read(fd, header, sizeof(Elf64_Ehdr));
-    if (bytes_read == -1)
-    {
-        perror("Error reading file");
-        free(header);
-        close(fd);
-        return 1;
-    }
-
-    print_elf_info(header);
-
-    free(header);
-    close(fd);
-    return 0;
-}
-
-void print_elf_info(Elf64_Ehdr *header)
-{
-    printf("ELF Header:\n");
-    printf("  Magic:   ");
-    for (int i = 0; i < EI_NIDENT; i++)
-        printf("%02x ", header->e_ident[i]);
-    printf("\n");
-
-    printf("  Class:                             %d\n", header->e_ident[EI_CLASS]);
-    printf("  Data:                              %d\n", header->e_ident[EI_DATA]);
-    printf("  Version:                           %d\n", header->e_ident[EI_VERSION]);
-    printf("  OS/ABI:                            %d\n", header->e_ident[EI_OSABI]);
-    printf("  ABI Version:                       %d\n", header->e_ident[EI_ABIVERSION]);
-    printf("  Type:                              %d\n", header->e_type);
-    printf("  Entry point address:               0x%lx\n", header->e_entry);
-}
-
 /**
  * check_elf - Checks if a file is an ELF file.
  * @e_ident: A pointer to an array containing the ELF magic numbers.
@@ -352,6 +297,61 @@ int main(int __attribute__((__unused__)) argc, char *argv[])
 		dprintf(STDERR_FILENO, "Error: `%s`: No such file\n", argv[1]);
 		exit(98);
 	}
+
+	int main(int argc, char *argv[])
+{
+    if (argc != 2)
+    {
+        fprintf(stderr, "Usage: %s <ELF file>\n", argv[0]);
+        return 1;
+    }
+
+    Elf64_Ehdr *header = malloc(sizeof(Elf64_Ehdr));
+    if (header == NULL)
+    {
+        perror("Error allocating memory");
+        return 1;
+    }
+
+    int fd = open(argv[1], O_RDONLY);
+    if (fd == -1)
+    {
+        perror("Error opening file");
+        return 1;
+    }
+
+    ssize_t bytes_read = read(fd, header, sizeof(Elf64_Ehdr));
+    if (bytes_read == -1)
+    {
+        perror("Error reading file");
+        free(header);
+        close(fd);
+        return 1;
+    }
+
+    print_elf_info(header);
+
+    free(header);
+    close(fd);
+    return 0;
+}
+
+void print_elf_info(Elf64_Ehdr *header)
+{
+    printf("ELF Header:\n");
+    printf("  Magic:   ");
+    for (int i = 0; i < EI_NIDENT; i++)
+        printf("%02x ", header->e_ident[i]);
+    printf("\n");
+
+    printf("  Class:                             %d\n", header->e_ident[EI_CLASS]);
+    printf("  Data:                              %d\n", header->e_ident[EI_DATA]);
+    printf("  Version:                           %d\n", header->e_ident[EI_VERSION]);
+    printf("  OS/ABI:                            %d\n", header->e_ident[EI_OSABI]);
+    printf("  ABI Version:                       %d\n", header->e_ident[EI_ABIVERSION]);
+    printf("  Type:                              %d\n", header->e_type);
+    printf("  Entry point address:               0x%lx\n", header->e_entry);
+}
 
 	check_elf(header->e_ident);
 	printf("ELF Header:\n");
