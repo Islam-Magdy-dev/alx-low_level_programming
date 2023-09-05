@@ -1,12 +1,13 @@
 #include "main.h"
+#include <stdlib.h> 
 
 /**
- * main - Entry point
- *
- * @argc: Input Number of Arguments
- * @argv: Input Arguments
- *
- * Return: Always 0
+* main - Entry point
+*
+* @argc: Input Number of Arguments
+* @argv: Input Arguments
+*
+* Return: Always 0
 */
 
 int main(int argc, char *argv[])
