@@ -11,11 +11,11 @@ void print_magic(unsigned char *e_ident);
 void print_class(unsigned char *e_ident);
 void print_data(unsigned char *e_ident);
 void print_version(unsigned char *e_ident);
-void print_abi(unsigned char *e_ident);
 void print_osabi(unsigned char *e_ident);
+void print_abi(unsigned char *e_ident);
 void print_type(unsigned int e_type, unsigned char *e_ident);
 void print_entry(unsigned long int e_entry, unsigned char *e_ident);
-void close_elf(int elf);
+void close_elf(int elf)
 
 /**
  * check_elf - Checks if a file is an ELF file.
@@ -260,54 +260,53 @@ void close_elf(int elf)
 	}
 }
 
-/**
- * main - Displays the information contained in the ELF header at the
- * start of an ELF file
- * @argc: The number of arguments
- * @argv: The arguments
- *
- * Return: 0 if successful, otherwise a number between 97 and
- * 100 (each number represents an error)
- */
-int main(int __attribute__((__unused__)) argc, char *argv[])
+int main(int argc, char *argv[])
 {
-	Elf64_Ehdr *header;
-	int o, r;
+    if (argc != 2)
+    {
+        fprintf(stderr, "Usage: %s <filename>\n", argv[0]);
+        return 97; // Invalid number of arguments
+    }
 
-	o = open(argv[1], O_RDONLY);
-	if (o == -1)
-	{
-		dprintf(STDERR_FILENO, "Error: Can't read file %s\n", argv[1]);
-		exit(98);
-	}
-	header = malloc(sizeof(Elf64_Ehdr));
-	if (header == NULL)
-	{
-		close_elf(o);
-		dprintf(STDERR_FILENO, "Error: Can't read file %s\n", argv[1]);
-		exit(98);
-	}
-	r = read(o, header, sizeof(Elf64_Ehdr));
-	if (r == -1)
-	{
-		free(header);
-		close_elf(o);
-		dprintf(STDERR_FILENO, "Error: `%s`: No such file\n", argv[1]);
-		exit(98);
-	}
+    int o, r;
+    Elf64_Ehdr *header;
 
-	check_elf(header->e_ident);
-	printf("ELF Header:\n");
-	print_magic(header->e_ident);
-	print_class(header->e_ident);
-	print_data(header->e_ident);
-	print_version(header->e_ident);
-	print_osabi(header->e_ident);
-	print_abi(header->e_ident);
-	print_type(header->e_type, header->e_ident);
-	print_entry(header->e_entry, header->e_ident);
+    o = open(argv[1], O_RDONLY);
+    if (o == -1)
+    {
+        perror("Error opening file");
+        return 98; // Error opening file
+    }
 
-	free(header);
-	close_elf(o);
-	return (0);
+    header = malloc(sizeof(Elf64_Ehdr));
+    if (header == NULL)
+    {
+        close_elf(o);
+        perror("Error allocating memory");
+        return 98; // Memory allocation error
+    }
+
+    r = read(o, header, sizeof(Elf64_Ehdr));
+    if (r == -1)
+    {
+        free(header);
+        close_elf(o);
+        perror("Error reading file");
+        return 98; // Error reading file
+    }
+
+    check_elf(header->e_ident);
+    printf("ELF Header:\n");
+    print_magic(header->e_ident);
+    print_class(header->e_ident);
+    print_data(header->e_ident);
+    print_version(header->e_ident);
+    print_osabi(header->e_ident);
+    print_abi(header->e_ident);
+    print_type(header->e_type, header->e_ident);
+    print_entry(header->e_entry, header->e_ident);
+
+    free(header);
+    close_elf(o);
+    return 0; // Success
 }
